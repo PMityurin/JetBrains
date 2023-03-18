@@ -4,11 +4,10 @@ from pygments.lexer import Lexer
 from pygments.lexers.parsers import PythonLexer
 
 
-
-# source = 'D:\\PyCharm\\Project\\JetBrains\\main.py'
 inverted_index = {}
 source_dict = {}
 
+# creating tokens for all received files
 def make_token(source: str):
     with open(source, 'r', encoding='utf-8') as file:
         source_code = file.read()
@@ -18,11 +17,13 @@ def make_token(source: str):
 
     for tokentype, tokenvalue in tokens:
         if tokentype == pygments.token.Name:
+            # filling dictionary, key = file location, value = list of token
             if source not in source_dict:
                 source_dict[source] = []
                 source_dict[source].append(tokenvalue)
             else:
                 source_dict[source].append(tokenvalue)
+            # filling dictionary, key = list of token, value = dictionary of file_location : count
             if tokenvalue not in inverted_index:
                 inverted_index[tokenvalue] = {}
                 inverted_index[tokenvalue][source] = 1
@@ -30,6 +31,7 @@ def make_token(source: str):
                 inverted_index[tokenvalue][source] += 1
             else:
                 inverted_index[tokenvalue][source] = 1
+
 
 with open('files.txt', 'r', encoding='utf-8') as ff:
     all_sources = ff.read().split('\n')
@@ -41,10 +43,7 @@ with open('files.txt', 'r', encoding='utf-8') as ff:
             make_token(source)
 
 
-# with open('inverted_index.txt', 'w', encoding='utf-8') as f:
-#     for i in inverted_index:
-#         f.write(f'{i}: {inverted_index[i]}\n\n')
-
+# record the received information in json
 with open('data_json.txt', 'w', encoding='utf-8') as json_file:
     json.dump(inverted_index, json_file)
 

@@ -1,7 +1,7 @@
 import json
 
-
-def gcs(list1:list, list2:list) -> int:
+# the function compares two lists and returns a number (the longest common substring)
+def lcs(list1:list, list2:list) -> int:
     start_list1 = [0] + list1
     start_list2 = [0] + list2
     dp = []
@@ -19,10 +19,10 @@ def gcs(list1:list, list2:list) -> int:
     return dp[len(list2)][len(list1)]
 
 
-source = "D:\\PyCharm\\Project\\Zadachki\\Yandex\\Лекция 6\\Zad2.1.py"
 matrix_repetitions = []
 
 
+# get previously processed data
 with open('data_json.txt', encoding='utf-8') as json_file:
     inverted_index = json.load(json_file)
 with open('data_json_source.txt', encoding='utf-8') as json_file:
@@ -31,38 +31,38 @@ with open('New_tokens.txt', encoding='utf-8') as json_file:
     token_values_new = json.load(json_file)
 
 
-new_token_values = token_values_new['token_value']  # получаем список с новыми токенами
+new_token_values = token_values_new['token_value']  # getting a list with new tokens
 
 all_token_values = []
 for key in inverted_index:
     if key in new_token_values:
-        all_token_values.append(key)    # заполнили список с токенами, где есть хотябы одно совпадение с новыми токенами
+        all_token_values.append(key)    # filled out a list with tokens, where there is at least one match with new tokens
 
 set_sources = set()
 for key in all_token_values:
     for info in inverted_index[key]:
-        set_sources.add(info)       # создали множество с расположением файлов, где есть хотябы одно совпадение
+        set_sources.add(info)       # created a set with the location of files where there is at least one match
 
 list_sources = list(set_sources)
 needed_sources = []
 for one_source in list_sources:
     count_token_name = len(sources_dict[one_source])
     if len(new_token_values) / count_token_name >= 0.85:
-        needed_sources.append(one_source)       #  убрали файлы, которые при полном совпадение не дают 85%
+        needed_sources.append(one_source)       # removed files that, with a complete match, do not give 85%
+
 
 count_match = []
 for source1 in needed_sources:
     token_list = sources_dict[source1]
-    temp_count = gcs(token_list, new_token_values)
+    temp_count = lcs(token_list, new_token_values)
     procen = temp_count / len(sources_dict[source1])
     if procen < 0.85:
         count_match.append(['OK', temp_count, procen])
+        print('OK', temp_count, procen)
     else:
         count_match.append([f'{source1}', temp_count, procen])
-print(len(needed_sources))
-print(len(set_sources))
-print(len(sources_dict))
-print(len(count_match))
+        print(f'{source1}', temp_count, procen)
+
+
 print(count_match)
 print(new_token_values)
-print(gcs(sources_dict["D:/PyCharm/Project/JetBrains/downloaded_files/a/Zad2.1.py"], new_token_values))

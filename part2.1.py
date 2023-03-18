@@ -4,10 +4,10 @@ import pygments.token
 from pygments.lexer import Lexer
 from pygments.lexers.parsers import PythonLexer
 
-
+# insert the path to the file to be compared
 source = "D:\\PyCharm\\Project\\Zadachki\\Yandex\\Лекция 6\\Zad2.1.py"
 
-
+# create new token from new file
 def new_token(source:str) -> list:
     with open(source, 'r', encoding='utf-8') as file:
         source_code = file.read()
@@ -20,9 +20,8 @@ def new_token(source:str) -> list:
     return token_value
 
 
-
-
 token_value = new_token(source)
+
 
 with open('New_tokens.txt', 'w', encoding='utf-8') as new_f:
     json.dump({'token_value':token_value}, new_f)
