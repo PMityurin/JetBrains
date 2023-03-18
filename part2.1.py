@@ -4,8 +4,9 @@ import pygments.token
 from pygments.lexer import Lexer
 from pygments.lexers.parsers import PythonLexer
 
+from config import new_path
 # insert the path to the file to be compared
-source = "D:\\PyCharm\\Project\\Zadachki\\Yandex\\Лекция 6\\Zad2.1.py"
+source = new_path
 
 # create new token from new file
 def new_token(source:str) -> list:

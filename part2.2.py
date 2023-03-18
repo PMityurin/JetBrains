@@ -56,13 +56,10 @@ for source1 in needed_sources:
     token_list = sources_dict[source1]
     temp_count = lcs(token_list, new_token_values)
     procen = temp_count / len(sources_dict[source1])
-    if procen < 0.85:
+    procen = float(str(procen)[:5]) * 100
+    if procen < 85:
         count_match.append(['OK', temp_count, procen])
-        print('OK', temp_count, procen)
+        print('OK', f'{temp_count} matches', f'{procen} %')
     else:
         count_match.append([f'{source1}', temp_count, procen])
-        print(f'{source1}', temp_count, procen)
-
-
-print(count_match)
-print(new_token_values)
+        print(f'{source1}', f'{temp_count} matches', f'{procen} %')

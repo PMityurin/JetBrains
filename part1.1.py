@@ -3,7 +3,10 @@ import zipfile
 from zipfile import ZipFile
 import time
 
-path = 'D:/PyCharm/Project/JetBrains'
+from config import base_path
+
+# insert the path to the file to be compared
+path = base_path
 
 found_files = []
 

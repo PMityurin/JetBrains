@@ -3,12 +3,11 @@
 !requirements.txt
 
 Lib/
-downloaded_files/
 from_archive/
 .idea/
 Scripts/
 пример/
 
-/main.py
-
-
+main.py
+pyvenv.cfg
+config.py
