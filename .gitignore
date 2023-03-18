@@ -1,0 +1,14 @@
+# created by virtualenv automatically
+*.txt
+!requirements.txt
+
+Lib/
+downloaded_files/
+from_archive/
+.idea/
+Scripts/
+пример/
+
+/main.py
+
+
