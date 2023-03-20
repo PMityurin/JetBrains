@@ -8,7 +8,7 @@ inverted_index = {}
 source_dict = {}
 
 # creating tokens for all received files
-def make_token(source: str):
+def make_token(source: str, lang: str):
     with open(source, 'r', encoding='utf-8') as file:
         source_code = file.read()
 
@@ -16,36 +16,39 @@ def make_token(source: str):
     tokens = Lexer.get_tokens(lexer, source_code)
 
     for tokentype, tokenvalue in tokens:
-        if tokentype == pygments.token.Name:
+        if 'Name' in str(tokentype).strip('.'):#tokentype == pygments.token.Name:
             # filling dictionary, key = file location, value = list of token
-            if source not in source_dict:
-                source_dict[source] = []
-                source_dict[source].append(tokenvalue)
+            if lang not in source_dict:
+                source_dict[lang] = {}
+            if source not in source_dict[lang]:
+                source_dict[lang][source] = []
+                source_dict[lang][source].append(tokenvalue)
             else:
-                source_dict[source].append(tokenvalue)
+                source_dict[lang][source].append(tokenvalue)
             # filling dictionary, key = list of token, value = dictionary of file_location : count
-            if tokenvalue not in inverted_index:
-                inverted_index[tokenvalue] = {}
-                inverted_index[tokenvalue][source] = 1
-            if source in inverted_index[tokenvalue]:
-                inverted_index[tokenvalue][source] += 1
+            if lang not in inverted_index:
+                inverted_index[lang] = {}
+            if tokenvalue not in inverted_index[lang]:
+                inverted_index[lang][tokenvalue] = {}
+                inverted_index[lang][tokenvalue][source] = 1
+            if source in inverted_index[lang][tokenvalue]:
+                inverted_index[lang][tokenvalue][source] += 1
             else:
-                inverted_index[tokenvalue][source] = 1
+                inverted_index[lang][tokenvalue][source] = 1
 
 
-with open('files.txt', 'r', encoding='utf-8') as ff:
-    all_sources = ff.read().split('\n')
-    for source in all_sources:
-        source = source.strip()
-        if source == 'D:\PyCharm\Project\JetBrains\part1.py':
-            continue
-        if source:
-            make_token(source)
+with open('files.json', encoding='utf-8') as json_f:
+    found_files = json.load(json_f)
+    for lang in found_files:
+        for source in found_files[lang]:
+            source = source.strip()
+            if source:
+                make_token(source, lang)
 
 
 # record the received information in json
-with open('data_json.txt', 'w', encoding='utf-8') as json_file:
+with open('data_json.json', 'w', encoding='utf-8') as json_file:
     json.dump(inverted_index, json_file)
 
-with open('data_json_source.txt', 'w', encoding='utf-8') as json_file:
+with open('data_json_source.json', 'w', encoding='utf-8') as json_file:
     json.dump(source_dict, json_file)
