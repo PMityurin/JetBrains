@@ -7,7 +7,7 @@ File description:
 * part1.2 -> goes through the list and creates tokens
 * part2.1 -> creates tokens for a new file to be compared
 * part2.2 -> compares files and returns "ok" for matches < 85% or "file repository and number of matches"
-* part3.1 -> coming soon..
+* JetBrains -> django app, one-page service with the ability to download a file and check it in a ready-made database
 * downloaded_files -> test folder with files
 
 
