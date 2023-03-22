@@ -1,6 +1,8 @@
 # created by virtualenv automatically
 *.txt
 *.json
+!data_json.json
+!data_json_source.json
 !requirements.txt
 
 Lib/
