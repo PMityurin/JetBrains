@@ -21,8 +21,7 @@ def make_token(source: str, lang: str):
             if lang not in source_dict:
                 source_dict[lang] = {}
             if source not in source_dict[lang]:
-                source_dict[lang][source] = []
-                source_dict[lang][source].append(tokenvalue)
+                source_dict[lang][source] = [tokenvalue]
             else:
                 source_dict[lang][source].append(tokenvalue)
             # filling dictionary, key = list of token, value = dictionary of file_location : count
@@ -31,7 +30,7 @@ def make_token(source: str, lang: str):
             if tokenvalue not in inverted_index[lang]:
                 inverted_index[lang][tokenvalue] = {}
                 inverted_index[lang][tokenvalue][source] = 1
-            if source in inverted_index[lang][tokenvalue]:
+            elif source in inverted_index[lang][tokenvalue]:
                 inverted_index[lang][tokenvalue][source] += 1
             else:
                 inverted_index[lang][tokenvalue][source] = 1

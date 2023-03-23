@@ -44,11 +44,11 @@ def archive_info(path_archive: str):
 
 
 # Bypass folders to find the necessary files
-def obhod_papok(path: str):
+def get_files(path: str):
     for i in os.listdir(path):
         if os.path.isdir(f'{path}/{i}'):
             newpath = f'{path}/{i}'
-            obhod_papok(newpath)
+            get_files(newpath)
         else:
             what_lang(f'{path}/{i}')
 
