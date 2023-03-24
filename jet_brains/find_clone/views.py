@@ -9,6 +9,7 @@ from .logiс import new_token, file_comparison
 
 def index(request):
     if request.method == 'POST' and request.FILES:
+        print(request.FILES)
         # получаем загруженный файл
         file = request.FILES['myfile1']
         fs = FileSystemStorage()

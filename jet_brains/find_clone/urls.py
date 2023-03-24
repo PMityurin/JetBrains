@@ -1,12 +1,7 @@
-from rest_framework import routers
-# from .api import New_FileViewSet
 from . import views
 from django.urls import path
 
 
-# router = routers.DefaultRouter()
-# router.register('api/new_file', New_FileViewSet, 'new_file')
-
-urlpatterns = [# router.urls
+urlpatterns = [
     path('', views.index)
 ]
