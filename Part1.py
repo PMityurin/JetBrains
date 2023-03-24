@@ -121,7 +121,7 @@ if __name__ == '__main__':
     get_tokens_from_found_files()
 
     # record the received information in json
-    with open('data_json.json', 'w', encoding='utf-8') as json_file:
+    with open('jet_brains/data_json.json', 'w', encoding='utf-8') as json_file:
         json.dump(inverted_index, json_file)
-    with open('data_json_source.json', 'w', encoding='utf-8') as json_file:
+    with open('jet_brains/data_json_source.json', 'w', encoding='utf-8') as json_file:
         json.dump(source_dict, json_file)
