@@ -13,7 +13,6 @@ Scripts/
 
 main.py
 pyvenv.cfg
-config.py
 
 # Django #
 *.log

@@ -2,7 +2,6 @@ import json
 import pygments.token
 from pygments.lexer import Lexer
 from pygments.lexers.parsers import PythonLexer
-from config import new_path
 from pygments.util import ClassNotFound
 
 
@@ -63,41 +62,51 @@ def file_comparison(path:str) -> str:
 
     for i in token_values_new:
         new_token_values = token_values_new[i]  # getting a list with new tokens
-        lang = i
 
     all_token_values = []
-    for key in inverted_index[lang]:
-        if key in new_token_values:
-            all_token_values.append(key)    # filled out a list with tokens, where there is at least one match with new tokens
+    for lang in inverted_index:
+        for key in inverted_index[lang]:
+            if key in new_token_values:
+                all_token_values.append(key)    # filled out a list with tokens, where there is at least one match with new tokens
 
     set_sources = set()
     for key in all_token_values:
-        for info in inverted_index[lang][key]:
-            set_sources.add(info)       # created a set with the location of files where there is at least one match
+        for lang in inverted_index:
+            if key in inverted_index[lang]:
+                for info in inverted_index[lang][key]:
+                    set_sources.add(info)       # created a set with the location of files where there is at least one match
 
     list_sources = list(set_sources)
     needed_sources = []
     for one_source in list_sources:
-        count_token_name = len(sources_dict[lang][one_source])
-        if len(new_token_values) / count_token_name >= 0.85:
-            needed_sources.append(one_source)       # removed files that, with a complete match, do not give 85%
+        for lang in sources_dict:
+            if one_source in sources_dict[lang]:
+                count_token_name = len(sources_dict[lang][one_source])
+                if len(new_token_values) / count_token_name >= 0.85:
+                    needed_sources.append(one_source)       # removed files that, with a complete match, do not give 85%
 
     count_match = []
     for source1 in needed_sources:
-        token_list = sources_dict[lang][source1]
-        temp_count = lcs(token_list, new_token_values)
-        procen = temp_count / len(sources_dict[lang][source1])
-        procen = float(str(procen)[:5]) * 100
-        if procen < 85:
-            count_match.append(['OK', temp_count, procen])
-            print('OK', f'{temp_count} matches', f'{procen} %')
-        else:
-            count_match.append([f'{source1}', temp_count, procen])
-            print(f'{source1}', f'{temp_count} matches', f'{procen} %')
+        for lang in sources_dict:
+            if source1 in sources_dict[lang]:
+                token_list = sources_dict[lang][source1]
+                temp_count = lcs(token_list, new_token_values)
+                procen = temp_count / len(sources_dict[lang][source1])
+                procen = float(str(procen)[:5]) * 100
+                if procen < 85:
+                    count_match.append(['OK', temp_count, procen])
+                    print('OK', f'{temp_count} matches', f'{procen} %')
+                else:
+                    count_match.append([f'{source1}', temp_count, procen])
+                    print(f'{source1}', f'{temp_count} matches', f'{procen} %')
     for i in count_match:
         if i[0] != 'OK':
             return f'{i[0]} | {i[1]} matches | {i[2]} %'
     else:
+        if '#id' in path:
+            lang = 'Text'
+        else:
+            _, lang = what_lang(path)
         for tokenvalue in new_token_values:
             # filling dictionary, key = file location, value = list of token
             if lang not in sources_dict:
