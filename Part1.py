@@ -114,14 +114,16 @@ def get_tokens_from_found_files():
                     make_token(source, lang=lexer)
 
 
-if __name__ == '__main__':
-    path = input('Enter the path to be processed:\n')
-    get_files(path)
-
-    get_tokens_from_found_files()
-
-    # record the received information in json
+def record_received_info():
     with open('jet_brains/data_json.json', 'w', encoding='utf-8') as json_file:
         json.dump(inverted_index, json_file)
     with open('jet_brains/data_json_source.json', 'w', encoding='utf-8') as json_file:
         json.dump(source_dict, json_file)
+
+
+
+if __name__ == '__main__':
+    path = input('Enter the path to be processed:\n')
+    get_files(path)
+    get_tokens_from_found_files()
+    record_received_info()

@@ -9,5 +9,4 @@ from django.urls import path
 
 urlpatterns = [# router.urls
     path('', views.index)
-    # path('check_new_file', views.check_new_file_view)
 ]

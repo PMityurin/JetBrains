@@ -5,11 +5,9 @@ from .models import New_File
 
 
 class New_FileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'file', 'check_done')
-    list_display_links = ('id', 'title')
-    search_fields = ('id', 'title', 'file')
-    list_filter = ('check_done',)
-    list_editable = ('check_done',)
+    list_display = ('id', 'file')
+    list_display_links = ('id', 'file')
+    search_fields = ('id', 'file')
 
 admin.site.register(New_File, New_FileAdmin)
 

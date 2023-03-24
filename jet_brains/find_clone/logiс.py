@@ -17,7 +17,6 @@ def what_lang(path:str) -> tuple:
         print('The downloaded file is in the wrong format, try again')
 
 
-
 # create new token from new file
 def new_token(source:str) -> dict:
     with open(source[1:], 'r', encoding='utf-8') as file:
@@ -27,13 +26,10 @@ def new_token(source:str) -> dict:
     token_value_dict, lang = what_lang(source)
     for tokentype, tokenvalue in tokens:
         if 'Name' in str(tokentype).strip('.'):
-            token_value_dict[lang] = token_value_dict.get(lang, []) + [tokenvalue]
+            token_value_dict.get(lang, []).append(tokenvalue)
     with open('New_tokens.json', 'w', encoding='utf-8') as new_f:
         json.dump(token_value_dict, new_f)
     return token_value_dict
-
-
-
 
 
 # the function compares two lists and returns a number (the longest common substring)
@@ -55,7 +51,7 @@ def lcs(list1:list, list2:list) -> int:
     return dp[len(list2)][len(list1)]
 
 
-def file_comparison() -> str:
+def file_comparison(path:str) -> str:
     matrix_repetitions = []
     # get previously processed data
     with open('data_json.json', encoding='utf-8') as json_file:
@@ -86,7 +82,6 @@ def file_comparison() -> str:
         if len(new_token_values) / count_token_name >= 0.85:
             needed_sources.append(one_source)       # removed files that, with a complete match, do not give 85%
 
-
     count_match = []
     for source1 in needed_sources:
         token_list = sources_dict[lang][source1]
@@ -102,5 +97,28 @@ def file_comparison() -> str:
     for i in count_match:
         if i[0] != 'OK':
             return f'{i[0]} | {i[1]} matches | {i[2]} %'
-        else:
-            return f'OK'
+    else:
+        for tokenvalue in new_token_values:
+            # filling dictionary, key = file location, value = list of token
+            if lang not in sources_dict:
+                sources_dict[lang] = {}
+            if path not in sources_dict[lang]:
+                sources_dict[lang][path] = [tokenvalue]
+            else:
+                sources_dict[lang][path].append(tokenvalue)
+            # filling dictionary, key = list of token, value = dictionary of file_location : count
+            if lang not in inverted_index:
+                inverted_index[lang] = {}
+            if tokenvalue not in inverted_index[lang]:
+                inverted_index[lang][tokenvalue] = {}
+                inverted_index[lang][tokenvalue][path] = 1
+            elif path in inverted_index[lang][tokenvalue]:
+                inverted_index[lang][tokenvalue][path] += 1
+            else:
+                inverted_index[lang][tokenvalue][path] = 1
+            # record the received information in json
+            with open('data_json.json', 'w', encoding='utf-8') as json_file:
+                json.dump(inverted_index, json_file)
+            with open('data_json_source.json', 'w', encoding='utf-8') as json_file:
+                json.dump(sources_dict, json_file)
+        return f'OK'

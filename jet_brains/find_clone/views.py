@@ -3,8 +3,8 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from .forms import UserForm
 from django import forms
 from django.core.files.storage import FileSystemStorage
-from .logika import new_token, file_comparison
-# Create your views here.
+from .logiс import new_token, file_comparison
+
 
 
 def index(request):
@@ -16,18 +16,10 @@ def index(request):
         filename = fs.save(file.name, file)
         # получение адреса по которому лежит файл
         new_token(fs.url(filename))
-        file_url = file_comparison()
+        file_info = file_comparison(fs.url(filename))
         return render(request, 'layout.html', {
-            'info': file_url
+            'info': file_info
         })
-        # return HttpResponse(f"<h2> title {title} - Тут будет ответ {file}, {type(file)}</h2>")
     else:
         userform = UserForm()
         return render(request, 'layout.html')
-# def check_new_file_view(request):
-#     '''Веб-сервис, обрабатывающий новый файл.
-#     Разбивает его на токены и сравнивает с уже имеющимися'''
-#     new_file = request.POST.files
-#     with open(new_file, 'r') as new_f:
-#
-#     return JsonResponse({'success': True})
