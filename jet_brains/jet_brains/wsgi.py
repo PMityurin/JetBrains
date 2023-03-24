@@ -1,5 +1,5 @@
 """
-WSGI config for JetBrains project.
+WSGI config for jet_brains project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'JetBrains.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jet_brains.settings')
 
 application = get_wsgi_application()
