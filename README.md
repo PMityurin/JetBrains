@@ -3,11 +3,9 @@
 The description of the test task is below.
 
 File description: 
-* part1.1 -> searches for the necessary files and creates a list
-* part1.2 -> goes through the list and creates tokens
-* part2.1 -> creates tokens for a new file to be compared
-* part2.2 -> compares files and returns "ok" for matches < 85% or "file repository and number of matches"
+* Part1 -> searches for the necessary files and creates a list. Does through the list and creates tokens
 * JetBrains -> django app, one-page service with the ability to download a file and check it in a ready-made database
+* to use the API, you need runserver and use -> http://127.0.0.1:8000/API/newfile/
 * downloaded_files -> test folder with files
 
 
