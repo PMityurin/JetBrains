@@ -1,28 +1,12 @@
 from django.db import models
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_init
 from .logiс import file_comparison
 import json
 from django.utils.timezone import now
 
 
-class New_File(models.Model):
-    file = models.FileField(upload_to='downloaded', null=True, blank=True)
-    description = models.TextField(default='...')
-    data = models.DateTimeField(default=now)
-
-
-class Result(models.Model):
-    result = models.CharField(max_length=255)
-    new_file_id = models.ForeignKey(New_File, on_delete=models.CASCADE)
-    data = models.DateTimeField(default=now)
-
-
-@receiver(post_save, sender=New_File)
-def my_handler(sender, **kwargs):
-    field_name = 'description'
-    obj = sender.objects.last()
-    source_code = getattr(obj, field_name)
+def my_handler(source_code, id):
     token_value_dict = {'Text' : []}
     tokenvalue = source_code
     value = tokenvalue.split('\n')
@@ -37,6 +21,19 @@ def my_handler(sender, **kwargs):
     with open('New_tokens.json', 'w', encoding='utf-8') as new_f:
         json.dump(token_value_dict, new_f)
 
-    result = file_comparison(f'#id{obj.id}')
-    Result.objects.create(new_file_id=obj, result=f'{result}')
-    return result
+    return file_comparison(f'#id{id}')
+
+
+class New_File(models.Model):
+    file = models.FileField(upload_to='downloaded', null=True, blank=True)
+    description = models.TextField(default='...')
+    data = models.DateTimeField(default=now)
+    result = models.CharField(max_length=255, default="Nothing")
+
+    def save(self, *args, **kwargs):
+        text = self.description
+        id = New_File.objects.last()
+        print(New_File.objects)
+        self.result = my_handler(text, id)
+        super().save()
+

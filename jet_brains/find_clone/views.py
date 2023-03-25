@@ -6,7 +6,7 @@ from .logiс import new_token, file_comparison
 
 from rest_framework import viewsets
 
-from .models import  New_File, Result
+from .models import  New_File
 
 
 def index(request):
