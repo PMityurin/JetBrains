@@ -1,19 +1,22 @@
 from django.db import models
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save
 from .logiс import file_comparison
 import json
-
-# Create your models here.
+from django.utils.timezone import now
 
 
 class New_File(models.Model):
-    title = models.CharField(max_length=200, blank=True, default='Nothing')
     file = models.FileField(upload_to='downloaded', null=True, blank=True)
-    description = models.TextField()
+    description = models.TextField(default='...')
+    data = models.DateTimeField(default=now)
 
-    def __str__(self):
-        return self.title
+
+class Result(models.Model):
+    result = models.CharField(max_length=255)
+    new_file_id = models.ForeignKey(New_File, on_delete=models.CASCADE)
+    data = models.DateTimeField(default=now)
+
 
 @receiver(post_save, sender=New_File)
 def my_handler(sender, **kwargs):
@@ -35,4 +38,5 @@ def my_handler(sender, **kwargs):
         json.dump(token_value_dict, new_f)
 
     result = file_comparison(f'#id{obj.id}')
-    New_File.objects.filter(id=f'{obj.id}').update(title=f'{result}')
+    Result.objects.create(new_file_id=obj, result=f'{result}')
+    return result

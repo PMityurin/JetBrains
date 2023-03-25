@@ -1,5 +1,4 @@
 from django.shortcuts import render
-# from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from .forms import UserForm
 from django import forms
 from django.core.files.storage import FileSystemStorage
@@ -7,13 +6,7 @@ from .logiс import new_token, file_comparison
 
 from rest_framework import viewsets
 
-from .serializers import New_FileSerializer
-from .models import  New_File
-
-
-class New_FileSet(viewsets.ModelViewSet):
-    queryset = New_File.objects.all()
-    serializer_class = New_FileSerializer
+from .models import  New_File, Result
 
 
 def index(request):
