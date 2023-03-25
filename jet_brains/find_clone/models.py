@@ -6,7 +6,8 @@ import json
 from django.utils.timezone import now
 
 
-def my_handler(source_code, id):
+# gets the text and converts it into tokens and calls the comparison function
+def my_handler(source_code: str, id: int) -> str:
     token_value_dict = {'Text' : []}
     tokenvalue = source_code
     value = tokenvalue.split('\n')
@@ -30,6 +31,7 @@ class New_File(models.Model):
     data = models.DateTimeField(default=now)
     result = models.CharField(max_length=255, default="Nothing")
 
+    # inserts the result into the result field
     def save(self, *args, **kwargs):
         text = self.description
         id = New_File.objects.last()

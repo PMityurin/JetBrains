@@ -13,7 +13,7 @@ def what_lang(path:str) -> tuple:
         new_token_dict[lexer] = []
         return new_token_dict, lexer
     except ClassNotFound:
-        print('The downloaded file is in the wrong format, try again')
+        pass
 
 
 # create new token from new file
