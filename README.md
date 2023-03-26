@@ -5,7 +5,8 @@ The description of the test task is below.
 File description: 
 * Part1 -> searches for the necessary files and creates a list. Does through the list and creates tokens
 * JetBrains -> django app, one-page service with the ability to download a file and check it in a ready-made database
-* to use the API, you need runserver and use -> http://127.0.0.1:8000/API/newfile/
+* to use the API, you need runserver and use -> http://127.0.0.1:8000/API/newfile/ ( you need to pass your code in the description field using the POST method )
+
 * downloaded_files -> test folder with files
 
 
