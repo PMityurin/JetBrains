@@ -1,5 +1,6 @@
 import json
 import pygments.token
+import re
 from pygments.lexer import Lexer
 from pygments.lexers.parsers import PythonLexer
 from pygments.util import ClassNotFound
@@ -13,7 +14,10 @@ def what_lang(path:str) -> tuple:
         new_token_dict[lexer] = []
         return new_token_dict, lexer
     except ClassNotFound:
-        pass
+        if path.split(".")[-1] == 'txt':
+            new_token_dict = {}
+            new_token_dict['TextLexer'] = []
+            return new_token_dict, 'TextLexer'
 
 
 # create new token from new file
@@ -23,12 +27,26 @@ def new_token(source:str) -> dict:
     lexer = pygments.lexers.get_lexer_for_filename(source)
     tokens = Lexer.get_tokens(lexer, source_code)
     token_value_dict, lang = what_lang(source)
-    for tokentype, tokenvalue in tokens:
-        if 'Name' in str(tokentype).strip('.'):
-            token_value_dict.get(lang, []).append(tokenvalue)
-    with open('New_tokens.json', 'w', encoding='utf-8') as new_f:
-        json.dump(token_value_dict, new_f)
-    return token_value_dict
+    if lang != "TextLexer":
+        for tokentype, tokenvalue in tokens:
+            if 'Name' in str(tokentype).strip('.'):
+                token_value_dict.get(lang, []).append(tokenvalue)
+        with open('New_tokens.json', 'w', encoding='utf-8') as new_f:
+            json.dump(token_value_dict, new_f)
+        return token_value_dict
+    else:
+        value = source_code.split('\n')
+        lang = 'TextLexer'
+        for string in value:
+            string = re.sub("[^A-Za-z]", " ", string)
+            words = string.split(' ')
+            for word in words:
+                if word:
+                    if '\r' in word:
+                        word = word[:-2]
+                    token_value_dict.get(lang, []).append(word)
+        with open('New_tokens.json', 'w', encoding='utf-8') as new_f:
+            json.dump(token_value_dict, new_f)
 
 
 # the function compares two lists and returns a number (the longest common substring)
@@ -104,7 +122,7 @@ def file_comparison(path:str) -> str:
             return f'{i[0]} | {i[1]} matches | {i[2]} %'
     else:
         if '#id' in path:
-            lang = 'Text'
+            lang = 'TextLexer'
         else:
             _, lang = what_lang(path)
         for tokenvalue in new_token_values:

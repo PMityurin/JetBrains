@@ -2,17 +2,19 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_init
 from .logiс import file_comparison
-import json
 from django.utils.timezone import now
+import json
+import re
 
 
 # gets the text and converts it into tokens and calls the comparison function
 def my_handler(source_code: str, id: int) -> str:
-    token_value_dict = {'Text' : []}
+    token_value_dict = {'TextLexer' : []}
     tokenvalue = source_code
     value = tokenvalue.split('\n')
-    lang = 'Text'
+    lang = 'TextLexer'
     for string in value:
+        string = re.sub("[^A-Za-z]", " ", string)
         words = string.split(' ')
         for word in words:
             if word:
@@ -34,8 +36,10 @@ class New_File(models.Model):
     # inserts the result into the result field
     def save(self, *args, **kwargs):
         text = self.description
-        id = New_File.objects.last()
-        print(New_File.objects)
+        try:
+            id = New_File.objects.all().last().id
+        except:
+            id = '1'
         self.result = my_handler(text, id)
         super().save()
 

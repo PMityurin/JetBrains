@@ -1,36 +1,35 @@
-import os
-import pygments.lexers
-import pygments.tokenizer
+# shop_scraper.py
+import random
+from asyncio import sleep
+import requests
+from bs4 import BeautifulSoup
+import time
 
-# Choose the repositories to download source code from
-repositories = ['https://github.com/intellij/community']
 
-# Initialize an empty inverted index
-inverted_index = {}
+headers = {
+    'Accapt': '*/*',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
+}
 
-# Loop through each repository
-for repo_url in repositories:
-    # Download the source code for the repository
-    # ...
+def search(list_pokupok):
+    for product in list_pokupok:
+        url = f'https://dixy.ru/catalog/search.php?q={product}'
 
-    # Loop through each source code file
-    for root, dirs, files in os.walk(repo_path):
-        for filename in files:
-            # Tokenize the source code file
-            lexer = pygments.lexers.get_lexer_for_filename(filename)
-            with open(os.path.join(root, filename), 'r') as file:
-                source_code = file.read()
-            tokens = pygments.tokenizer.TokenList(lexer.get_tokens(source_code))
 
-            # Extract token names and update inverted index
-            for token in tokens:
-                if token.type == pygments.token.Name:
-                    if token.value not in inverted_index:
-                        inverted_index[token.value] = []
-                    inverted_index[token.value].append(os.path.join(root, filename))
+        response = requests.get(url, headers=headers)
+        soup = BeautifulSoup(response.text, 'lxml')
+        items = soup.find_all('div', class_='dixyCatalogItem')
+        if items:
+            with open(f'data/{product}.txt', 'w', encoding='utf-8') as file:
 
-# Save the inverted index to a file or database
-# ...
-with open('inverted_index.txt', 'w') as f:
-    for i in inverted_index:
-        f.write(f'{i}: {inverted_index[i]}\n\n')
+                for n, i in enumerate(items, start=1):
+                    itemName = i.find('div', class_='dixyCatalogItem__title').text.strip()
+                    itemPrice = i.find('p').text.strip()
+                    print(f'{n}:  {itemPrice} за {itemName}')
+                    print('***')
+                    file.write(f'{n}:  {itemPrice} за {itemName}\n')
+        else:
+            print(f'{product} - None')
+        # sleep(random.randrange(2, 8))
+want_to_byu = ['сыр', 'булка', 'фарш']
+search(want_to_byu)

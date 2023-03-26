@@ -1,0 +1,18 @@
+from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
+from
+# Create your models here.
+
+
+class New_File(models.Model):
+    title = models.CharField(max_length=200, blank=True)
+    file = models.FileField(upload_to='downloaded', required=False)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.title
+
+@receiver(pre_save, sender=New_File)
+def my_handler(sender, **kwargs):
+    pass
